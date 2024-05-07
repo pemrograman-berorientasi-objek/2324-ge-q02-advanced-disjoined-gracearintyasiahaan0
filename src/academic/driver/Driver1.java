@@ -214,7 +214,6 @@ public class Driver1 {
                 //     break;
             }
         }
-
         
                 
         for (Lecturer lecturer : lecturers) {
