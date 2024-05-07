@@ -31,7 +31,6 @@ public class Driver1 {
         List<String> inputList = new ArrayList<>();
         List<Lecturer> lecturers = new ArrayList<>();
         List<CourseOpening> courseOpenings = new ArrayList<>();
-        // List<String> bestStudents = new ArrayList<>();
         Map<String, String> lecturerEmails = new HashMap<>();
 
         
@@ -75,7 +74,6 @@ public class Driver1 {
                         }
                     }
                     break;
-                    
                 case "enrollment-add":
                     if (command.length == 5) {
                         Enrollment enrollment = new Enrollment(command[1], command[2], command[3], command[4]);
@@ -84,7 +82,6 @@ public class Driver1 {
                         }
                     }
                     break;
-
                 case "enrollment-grade":
                     if (command.length == 6) {
                         String Code = command[1];
@@ -102,7 +99,6 @@ public class Driver1 {
                         }
                     }
                     break;
-
                 case "student-details":
                     for (Student student : students) {
                         double gpa = calculateGPA(student.getId(), enrollments, courses); 
@@ -112,8 +108,7 @@ public class Driver1 {
                         }
                     }
                     break;
-
-                case "course-open":
+                    case "course-open":
                     String courseCode = command[1];
                     String academicYear = command[2];
                     String semester = command[3];
@@ -131,8 +126,10 @@ public class Driver1 {
                     CourseOpening courseOpening = new CourseOpening(courseCode, academicYear, semester, lecturerList, lecturerInitial); // Menggunakan daftar lecturerList yang sudah sesuai tipe
                     courseOpenings.add(courseOpening);
                     break;
+                
 
-                case "course-history":
+
+                    case "course-history":
                     String targetCourseCode = command[1];
                     List<CourseOpening> filteredOpenings = courseOpenings.stream()
                             .filter(opening -> opening.getCourseCode().equals(targetCourseCode))
@@ -176,44 +173,31 @@ public class Driver1 {
                     }
                     break;
                 
-                case "enrollment-remedial":
-                    for (Enrollment enrollment : enrollments) {
-                        if (enrollment.getCode().equals(command[1]) && 
-                            enrollment.getId().equals(command[2]) &&
-                            enrollment.getAcademicYear().equals(command[3]) &&
-                            enrollment.getSemester().equals(command[4])) {
-                            if (enrollment.getGrade().equals("None")) {
-                                break;
+                
+                
+            case "enrollment-remedial":
+                for (Enrollment enrollment : enrollments) {
+                    if (enrollment.getCode().equals(command[1]) && 
+                        enrollment.getId().equals(command[2]) &&
+                        enrollment.getAcademicYear().equals(command[3]) &&
+                        enrollment.getSemester().equals(command[4])) {
+                        if (enrollment.getGrade().equals("None")) {
+                            break;
+                        } else {
+                            if (enrollment.getTotal() == 0) {
+                                enrollment.setPreviousGrade(command[5]);
+                                enrollment.swapGrade();
+                                enrollment.setTotal();
                             } else {
-                                if (enrollment.getTotal() == 0) {
-                                    enrollment.setPreviousGrade(command[5]);
-                                    enrollment.swapGrade();
-                                    enrollment.setTotal();
-                                } else {
-                                    String previousGrade = enrollment.getPreviousGrade();
-                                    enrollment.setRemedialGrade(previousGrade + "(" + command[5] + ")");
-                                }
+                                String previousGrade = enrollment.getPreviousGrade();
+                                enrollment.setRemedialGrade(previousGrade + "(" + command[5] + ")");
                             }
                         }
                     }
-                    break;
-
-                    case "find-the-best-student":
-                    String academicYears = command[1];
-                    String semesters = command[2];
-                    List<String> bestStudents = findBestStudents(academicYears, semesters, enrollments, courses);
-                    for (String studentId : bestStudents) {
-                        System.out.println(studentId);
-                    }
-                    break;
-                // case "add-best-student":
-                //     String bestStudent = command[1];
-                //     if (!bestStudents.contains(bestStudent)) {
-                //         bestStudents.add(bestStudent);
-                //     }
-                //     break;
-            }
+                }
         }
+    }
+
         
                 
         for (Lecturer lecturer : lecturers) {
@@ -292,33 +276,8 @@ private static double calculateGPA(String studentId, List<Enrollment> enrollment
 
     return totalScore / totalCredits;
 }
-
-// private static List<String> findBestStudents(String academicYear, String semester, List<Enrollment> enrollments, List<Course> courses) {
-    //     Map<String, String> studentGradesOdd = new HashMap<>();
-    //     Map<String, String> studentGradesEven = new HashMap<>();
-    
-    //     // Hitung nilai mahasiswa untuk setiap semester ganjil dan genap
-    //     for (Enrollment enrollment : enrollments) {
-    //         if (enrollment.getAcademicYear().equals(academicYear)) {
-    //             if (enrollment.getSemester().equalsIgnoreCase("odd")) {
-    //                 studentGradesOdd.put(enrollment.getId(), enrollment.getGrade());
-    //             } else if (enrollment.getSemester().equalsIgnoreCase("even")) {
-    //                 studentGradesEven.put(enrollment.getId(), enrollment.getGrade());
-    //             }
-    //         }
-    //     }
-    
-    //     // Pilih mahasiswa dengan nilai tertinggi di semester ganjil dan genap
-    //     List<String> bestStudents = new ArrayList<>();
-    //     for (String studentId : studentGradesOdd.keySet()) {
-    //         if (studentGradesEven.containsKey(studentId)) {
-    //             bestStudents.add(studentId + "|" + studentGradesOdd.get(studentId) + "/" + studentGradesEven.get(studentId));
-    //         }
-    //     }
-    
-    //     return bestStudents;
-    // }
-    
+        
+      
 private static int calculateTotalCredits(String studentId, List<Enrollment> enrollments, List<Course> courses) {
     Set<String> enrolledCourses = new HashSet<>();
     int totalCredits = 0;
@@ -342,7 +301,7 @@ private static int calculateTotalCredits(String studentId, List<Enrollment> enro
 
     return totalCredits;
 }
-
+       
         private static double convertGradeToScore(String grade) {
         switch (grade) {
             case "A":
@@ -363,43 +322,6 @@ private static int calculateTotalCredits(String studentId, List<Enrollment> enro
                 return 0.0;
         }
     }
-    private static List<String> findBestStudents(String academicYear, String semester, List<Enrollment> enrollments, List<Course> courses) {
-        Map<String, String> studentGradesOdd = new HashMap<>();
-        Map<String, String> studentGradesEven = new HashMap<>();
-    
-        // Hitung nilai mahasiswa untuk setiap semester ganjil dan genap
-        for (Enrollment enrollment : enrollments) {
-            if (enrollment.getAcademicYear().equals(academicYear)) {
-                if (enrollment.getSemester().equalsIgnoreCase("odd")) {
-                    studentGradesOdd.put(enrollment.getId(), enrollment.getGrade());
-                } else if (enrollment.getSemester().equalsIgnoreCase("even")) {
-                    studentGradesEven.put(enrollment.getId(), enrollment.getGrade());
-                }
-            }
-        }
-    
-        // Pilih 1 mahasiswa terbaik
-        List<String> bestStudents = new ArrayList<>();
-        String bestStudentId = null;
-        double highestGPA = Double.MIN_VALUE;
-        for (String studentId : studentGradesOdd.keySet()) {
-            if (studentGradesEven.containsKey(studentId)) {
-                double gpa = calculateGPA(studentId, enrollments, courses);
-                if (gpa > highestGPA) {
-                    bestStudentId = studentId;
-                    highestGPA = gpa;
-                }
-            }
-        }
-        if (bestStudentId != null) {
-            bestStudents.add(bestStudentId + "|" + studentGradesOdd.get(bestStudentId) + "/" + studentGradesEven.get(bestStudentId));
-        }
-    
-        return bestStudents;
-    }
-    
-           
-    
 }
 
  
