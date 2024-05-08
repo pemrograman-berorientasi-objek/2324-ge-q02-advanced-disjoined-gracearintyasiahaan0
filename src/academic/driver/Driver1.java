@@ -29,6 +29,7 @@ public class Driver1 {
         List<Student> students = new ArrayList<>();
         List<Enrollment> enrollments = new ArrayList<>();
         List<String> inputList = new ArrayList<>();
+        List<String> bestStudentsOutput = new ArrayList<>();
         List<Lecturer> lecturers = new ArrayList<>();
         List<CourseOpening> courseOpenings = new ArrayList<>();
         // List<String> bestStudents = new ArrayList<>();
@@ -199,13 +200,13 @@ public class Driver1 {
                     break;
 
                     case "find-the-best-student":
-                    String academicYears = command[1];
-                    String semesters = command[2];
-                    List<String> bestStudents = findBestStudents(academicYears, semesters, enrollments, courses);
-                    for (String studentId : bestStudents) {
-                        System.out.println(studentId);
-                    }
-                    break;
+    String academicYears = command[1];
+    String semesters = command[2];
+    List<String> bestStudents = findBestStudents(academicYears, semesters, enrollments, courses);
+    for (String studentId : bestStudents) {
+        bestStudentsOutput.add(studentId); // Menambahkan hasil pencarian mahasiswa terbaik ke dalam list
+    }
+    break;
                 // case "add-best-student":
                 //     String bestStudent = command[1];
                 //     if (!bestStudents.contains(bestStudent)) {
@@ -235,6 +236,9 @@ public class Driver1 {
                 System.out.println(enrollment.getCode() + "|" + enrollment.getId() + "|" + enrollment.getAcademicYear() + "|" + enrollment.getSemester() + "|" + enrollment.getGrade()+"("+enrollment.getPreviousGrade()+")");
             }
         } 
+        for (String bestStudent : bestStudentsOutput) {
+            System.out.println(bestStudent);
+        }
     }
 
     private static boolean isDuplicateCourse(Course course, List<Course> courses) {
